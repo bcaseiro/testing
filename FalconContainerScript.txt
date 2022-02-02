@@ -1,0 +1,83 @@
+#!/bin/bash
+echo " "
+echo " -- Rodar este script como Root -- "
+echo ""
+
+################Step 1:
+echo "------"
+echo "Step 1 - Make sure you set your variables properly."
+
+######################################################################
+## Altere as variaveis de ambiente abaixo, de acordo com seu ambiente:
+######################################################################
+FALCON_CLOUD="US-1"
+FALCON_CLOUD_API="api.crowdstrike.com"
+#FALCON_CONTAINER_VERSION="6.34.0-1701"
+FALCON_CONTAINER_VERSION="6.33.0-1601"
+#FALCON_CONTAINER_VERSION="6.30.0-1301"
+FALCON_CLIENT_ID=5e3c56b220754398afb737d2d1f614fc
+FALCON_CLIENT_SECRET=Mpn89va21m0uRYzK6QV4H3Nq5oXWifSLCATZbsE7
+## Observe que o CID abaixo precisa ser em lowercase e sem os digitos.
+CID=f7c105f78ef34a10b4f49f133ad280c3
+
+## O falcon_cid precisa do digito final, pois 'e usado em outro momento.
+FALCON_CID=F7C105F78EF34A10B4F49F133AD280C3-C8
+NAMESPACES="default"
+echo " "
+echo " "
+
+
+############ Step 2:
+echo "------"
+echo "Step 2 - Pegando o token de acesso ...: "
+FALCON_API_BEARER_TOKEN=$(curl --silent --header "Content-Type: application/x-www-form-urlencoded" --data "client_id=$FALCON_CLIENT_ID&client_secret=$FALCON_CLIENT_SECRET" --request POST --url "https://$FALCON_CLOUD_API/oauth2/token" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+echo " "
+echo $FALCON_API_BEARER_TOKEN
+echo " "
+echo " "
+
+FALCON_ART_USERNAME=fc-$CID
+#ART_PASSWORD=$FALCON_API_BEARER_TOKEN
+
+
+########### Step 3:
+echo "------"
+echo "Step 3 - ART_Password:"
+FALCON_ART_PASSWORD=$(curl --silent -X GET -H "authorization: Bearer $FALCON_API_BEARER_TOKEN" https://$FALCON_CLOUD_API/container-security/entities/image-registry-credentials/v1 | python3 -c "import sys, json;print(json.load(sys.stdin)['resources'][0]['token'])")
+echo ""
+echo $FALCON_ART_PASSWORD
+echo ""
+echo ""
+
+
+########### Step 4:
+echo "------"
+echo "Step 4 - Login into the Crowdstrike registry"
+docker login --username $FALCON_ART_USERNAME --password  $FALCON_ART_PASSWORD registry.crowdstrike.com
+echo ""
+echo "Se sucesso, deve ser criado o arquivo: /root/.docker/config.json"
+
+
+########### Step 5:
+echo "------"
+echo "Step 5 - Registrar o objeto de authenticacao."
+export FALCON_IMAGE_PULL_TOKEN=$(cat /root/.docker/config.json | base64 -w 0)
+FALCON_IMAGE_PULL_TOKEN=$(cat /root/.docker/config.json | base64 -w 0)
+echo ""
+echo ""
+
+########### Step 6:
+echo "------"
+echo "Step 6 - We need to build the Image URI for the Kubernetes cluster to pull the image from:"
+export FALCON_IMAGE_URI=registry.crowdstrike.com/falconcontainer$FALCON_CLOUD_LOWER/release/falconsensor:$FALCON_CONTAINER_.container.x86_64.Release.$FALCON_CLOUD
+FALCON_IMAGE_URI=registry.crowdstrike.com/falconcontainer$FALCON_CLOUD_LOWER/release/falconsensor:$FALCON_CONTAINER_SENSOR.container.x86_64.Release.$FALCON_CLOUD
+
+#printenv
+echo ""
+echo ""
+
+########## Step 7: 
+echo "------"
+echo "Step 7 - use the Falcon Container Sensor to generate a k8s deployment file named falon-container.yaml and we pipe that to kubectl to create the deployment at the same time"
+echo ""
+docker run --rm $FALCON_IMAGE_URI -falconctl-env FALCONCTL_OPT_TAGS="tag_lab" -namespaces $NAMESPACES -cid $FALCON_CID -image $FALCON_IMAGE_URI -pulltoken "$FALCON_IMAGE_PULL_TOKEN" -disable-default-ns-injection | tee falcon-container.yaml | kubectl create -f -
