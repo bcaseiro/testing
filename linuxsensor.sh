@@ -8,8 +8,8 @@
 #    If you don't have one, create it on the Crowdstrike Falcon webconsole, under the "Support" menu - "API clients and keys". You need to give at least the "Read" permission on the "Sensor Download" api scope.
 
 # Set here your Client ID and Client Secret
-export FALCON_CLIENT_ID="69707d09cb48426b81e44ec619c3c7ee"
-export FALCON_CLIENT_SECRET="XE7JWq0PHu2zwdj4sYlQ13MCv6ontZ8Gk5KVmIU9"
+export FALCON_CLIENT_ID="xxxxxx"
+export FALCON_CLIENT_SECRET="yyyyyyyyyy"
 
 
 # 2) Set here your cloud api address:
